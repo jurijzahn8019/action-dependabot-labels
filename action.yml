@@ -1,0 +1,12 @@
+name: "Dependabot Labels"
+description: "labels dependabot pull requests"
+inputs:
+  token:
+    description: "Github Api token with repo scope, e.g. secrets.GITHUB_TOKEN"
+    required: true
+outputs:
+  foo:
+    description: "test"
+runs:
+  using: "node12"
+  main: "dist/index.cjs.js"
