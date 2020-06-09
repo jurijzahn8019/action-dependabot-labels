@@ -102,11 +102,13 @@ async function run() {
                 name: l,
             });
         }));
-        await client.issues.addLabels({
-            ...github.context.repo,
-            issue_number: pr.number,
-            labels: plan.add,
-        });
+        if (plan.add.length > 0) {
+            await client.issues.addLabels({
+                ...github.context.repo,
+                issue_number: pr.number,
+                labels: plan.add,
+            });
+        }
     }
     catch (e) {
         core.setFailed(e.message);

@@ -70,11 +70,13 @@ export async function run(): Promise<void> {
       })
     );
 
-    await client.issues.addLabels({
-      ...context.repo,
-      issue_number: pr.number,
-      labels: plan.add,
-    });
+    if (plan.add.length > 0) {
+      await client.issues.addLabels({
+        ...context.repo,
+        issue_number: pr.number,
+        labels: plan.add,
+      });
+    }
   } catch (e) {
     setFailed(e.message);
   }
