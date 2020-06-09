@@ -16,7 +16,7 @@ jobs:
   labels:
     runs-on: ubuntu-latest
     steps:
-      - uses: jurijzahn8019/action-dependabot-labels
+      - uses: jurijzahn8019/action-dependabot-labels@vNext
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
