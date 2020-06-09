@@ -6,6 +6,7 @@ const titles = [
   "chore(deps-dev): bump @otto-ec/toolbox from 1.13.0 to 1.13.1",
   "chore(deps-dev): bump @mdi/font from 5.2.45 to 5.3.45",
   "chore(deps-dev): bump jest from 25.4.0 to 26.0.1",
+  "chore(deps): bump actions/setup-node from v1 to v2.0.0",
   "chore(deps-dev): foo bar 35.4.0",
 ];
 

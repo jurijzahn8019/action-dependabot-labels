@@ -1,9 +1,9 @@
-import { SemVer, diff, ReleaseType } from "semver";
+import { SemVer, coerce, diff, ReleaseType } from "semver";
 import { promises as fs } from "fs";
 import { RestEndpointMethodTypes } from "@octokit/rest";
 
 const { readFile } = fs;
-const matchPattern = /\w+\([\w-]+\):\s+bump\s+\S+\s+from\s+(?<from>[\d.]+)\s+to\s+(?<to>[\d.]+)/;
+const matchPattern = /\w+\([\w-]+\):\s+bump\s+\S+\s+from\s+v?(?<from>[\d.]+)\s+to\s+v?(?<to>[\d.]+)/;
 export const Labels: Record<string, { color: string; description: string }> = {
   major: {
     color: "0D3184",
@@ -23,9 +23,15 @@ export function matchTitle(
   title: string
 ): { from: SemVer; to: SemVer } | undefined {
   const match = matchPattern.exec(title);
-  return match?.groups && match.groups.from && match.groups.to
-    ? { from: new SemVer(match.groups.from), to: new SemVer(match.groups.to) }
-    : undefined;
+  if (match?.groups && match.groups.from && match.groups.to) {
+    const res = {
+      from: coerce(match.groups.from),
+      to: coerce(match.groups.to),
+    };
+    return res.from && res.to ? { from: res.from, to: res.to } : undefined;
+  }
+
+  return undefined;
 }
 
 export function verDiff(from: SemVer, to: SemVer): ReleaseType | null {

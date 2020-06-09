@@ -1,11 +1,11 @@
 import { getInput, setOutput, setFailed } from '@actions/core';
 import { getOctokit, context } from '@actions/github';
 import debug from 'debug';
-import { SemVer, diff } from 'semver';
+import { diff, coerce } from 'semver';
 import { promises } from 'fs';
 
 const { readFile } = promises;
-const matchPattern = /\w+\([\w-]+\):\s+bump\s+\S+\s+from\s+(?<from>[\d.]+)\s+to\s+(?<to>[\d.]+)/;
+const matchPattern = /\w+\([\w-]+\):\s+bump\s+\S+\s+from\s+v?(?<from>[\d.]+)\s+to\s+v?(?<to>[\d.]+)/;
 const Labels = {
     major: {
         color: "0D3184",
@@ -22,9 +22,14 @@ const Labels = {
 };
 function matchTitle(title) {
     const match = matchPattern.exec(title);
-    return (match === null || match === void 0 ? void 0 : match.groups) && match.groups.from && match.groups.to
-        ? { from: new SemVer(match.groups.from), to: new SemVer(match.groups.to) }
-        : undefined;
+    if ((match === null || match === void 0 ? void 0 : match.groups) && match.groups.from && match.groups.to) {
+        const res = {
+            from: coerce(match.groups.from),
+            to: coerce(match.groups.to),
+        };
+        return res.from && res.to ? { from: res.from, to: res.to } : undefined;
+    }
+    return undefined;
 }
 function verDiff(from, to) {
     return diff(from, to);
