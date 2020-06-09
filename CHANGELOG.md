@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.4](https://github.com/jurijzahn8019/action-dependabot-labels/compare/v0.0.3...v0.0.4) (2020-06-09)
+
+
+### Bug Fixes
+
+* **labeler:** do not call api if no labels ([93304c1](https://github.com/jurijzahn8019/action-dependabot-labels/commit/93304c1c176205ec2a7182b18ccf5b0095acda8d))
+
 ### [0.0.3](https://github.com/jurijzahn8019/action-dependabot-labels/compare/v0.0.2...v0.0.3) (2020-06-09)
 
 
