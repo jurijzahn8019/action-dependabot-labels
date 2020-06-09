@@ -56,11 +56,16 @@ function buildPlan(repoLabels, pullLabels, setLabels) {
 /* eslint-disable @typescript-eslint/camelcase */
 const dbg = debug("action-dependabot-labels:index");
 async function run() {
+    var _a;
     dbg("Check PR Title and label PR!");
     try {
         const token = core.getInput("token", { required: true });
         const event = await getEvent();
         const client = github.getOctokit(token);
+        if (((_a = event === null || event === void 0 ? void 0 : event.pull_request) === null || _a === void 0 ? void 0 : _a.number) === undefined) {
+            core.setOutput("result", "no pr info provided");
+            return;
+        }
         const pr = (await client.pulls.get({
             ...github.context.repo,
             pull_number: event.pull_request.number,

@@ -10,8 +10,8 @@ export declare function matchTitle(title: string): {
 } | undefined;
 export declare function verDiff(from: SemVer, to: SemVer): ReleaseType | null;
 export declare function getEvent(): Promise<{
-    pull_request: {
-        number: number;
+    pull_request?: {
+        number?: number;
     };
 }>;
 export declare function buildPlan(repoLabels: RestEndpointMethodTypes["issues"]["listLabelsForRepo"]["response"]["data"], pullLabels: RestEndpointMethodTypes["issues"]["listLabelsOnIssue"]["response"]["data"], setLabels: string[]): {

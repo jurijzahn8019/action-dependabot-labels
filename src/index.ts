@@ -13,6 +13,11 @@ export async function run(): Promise<void> {
     const event = await getEvent();
     const client = getOctokit(token);
 
+    if (event?.pull_request?.number === undefined) {
+      setOutput("result", "no pr info provided");
+      return;
+    }
+
     const pr = (
       await client.pulls.get({
         ...context.repo,

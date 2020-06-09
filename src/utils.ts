@@ -39,7 +39,7 @@ export function verDiff(from: SemVer, to: SemVer): ReleaseType | null {
 }
 
 export async function getEvent(): Promise<{
-  pull_request: { number: number };
+  pull_request?: { number?: number };
 }> {
   return JSON.parse(
     await readFile(process.env.GITHUB_EVENT_PATH as string, "utf8")
