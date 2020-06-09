@@ -17,6 +17,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: jurijzahn8019/action-dependabot-labels@vNext
+        env:
+          DEBUG: "*"
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
