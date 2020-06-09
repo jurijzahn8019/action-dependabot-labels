@@ -54,7 +54,7 @@ jobs:
   foo_bar:
     runs-on: ubuntu-latest
     steps:
-      - uses: jurijzahn8019/action-dependabot-labels
+      - uses: jurijzahn8019/action-dependabot-labels@0.0.1
         env:
           # This way you can enable debug output
           DEBUG: action-dependabot-labels:*
@@ -83,7 +83,7 @@ jobs:
   foo_bar:
     runs-on: ubuntu-latest
     steps:
-      - uses: jurijzahn8019/action-dependabot-labels
+      - uses: jurijzahn8019/action-dependabot-labels@0.0.1
         with:
           token: ${{ secrets.GITHUB_TOKEN }
 
