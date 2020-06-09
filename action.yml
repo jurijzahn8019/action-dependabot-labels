@@ -5,8 +5,8 @@ inputs:
     description: "Github Api token with repo scope, e.g. secrets.GITHUB_TOKEN"
     required: true
 outputs:
-  foo:
-    description: "test"
+  result:
+    description: "result of the action run"
 runs:
   using: "node12"
   main: "dist/index.cjs.js"

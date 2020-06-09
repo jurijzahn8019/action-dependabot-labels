@@ -7,6 +7,7 @@ import { matchTitle, getEvent, buildPlan, verDiff, Labels } from "./utils";
 const dbg = debug("action-dependabot-labels:index");
 
 export async function run(): Promise<void> {
+  dbg("Check PR Title and label PR!");
   try {
     const token = getInput("token", { required: true });
     const event = await getEvent();

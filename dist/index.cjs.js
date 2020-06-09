@@ -51,6 +51,7 @@ function buildPlan(repoLabels, pullLabels, setLabels) {
 /* eslint-disable @typescript-eslint/camelcase */
 const dbg = debug("action-dependabot-labels:index");
 async function run() {
+    dbg("Check PR Title and label PR!");
     try {
         const token = core.getInput("token", { required: true });
         const event = await getEvent();
