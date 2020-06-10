@@ -1,5 +1,6 @@
 import { SemVer } from "semver";
 import { matchTitle, verDiff, buildPlan } from "./utils";
+import { Labels } from "./config";
 
 const titles = [
   "chore(deps-dev): bump @rollup/plugin-commonjs from 11.1.0 to 13.0.0",
@@ -34,14 +35,14 @@ describe("utils/verDiff", () => {
 describe("utils/plan", () => {
   it("Should plan labels", () => {
     const res = buildPlan(
-      [{ name: "minor" }, { name: "foo-bar" }] as any,
-      [{ name: "foo" }, { name: "minor" }, { name: "patch" }] as any,
-      ["major", "baz-bar"]
+      [{ name: "dependency: minor" }, { name: "foo-bar" }] as any,
+      [{ name: "foo" }, { name: "dependency: minor" }] as any,
+      Labels.patch
     );
     expect(res).toEqual({
-      add: ["major", "baz-bar"],
-      remove: ["minor", "patch"],
-      create: ["major", "baz-bar"],
+      add: ["pull: automerge", "dependency: patch"],
+      remove: ["dependency: minor"],
+      create: Labels.patch,
     });
   });
 });

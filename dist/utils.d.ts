@@ -1,9 +1,6 @@
 import { SemVer, ReleaseType } from "semver";
 import { RestEndpointMethodTypes } from "@octokit/rest";
-export declare const Labels: Record<string, {
-    color: string;
-    description: string;
-}>;
+import { LabelConfig } from "./config";
 export declare function matchTitle(title: string): {
     from: SemVer;
     to: SemVer;
@@ -14,8 +11,8 @@ export declare function getEvent(): Promise<{
         number?: number;
     };
 }>;
-export declare function buildPlan(repoLabels: RestEndpointMethodTypes["issues"]["listLabelsForRepo"]["response"]["data"], pullLabels: RestEndpointMethodTypes["issues"]["listLabelsOnIssue"]["response"]["data"], setLabels: string[]): {
+export declare function buildPlan(repoLabels: RestEndpointMethodTypes["issues"]["listLabelsForRepo"]["response"]["data"], pullLabels: RestEndpointMethodTypes["issues"]["listLabelsOnIssue"]["response"]["data"], setLabels: LabelConfig[]): {
     add: string[];
     remove: string[];
-    create: string[];
+    create: LabelConfig[];
 };

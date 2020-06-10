@@ -1,23 +1,10 @@
 import { SemVer, coerce, diff, ReleaseType } from "semver";
 import { promises as fs } from "fs";
 import { RestEndpointMethodTypes } from "@octokit/rest";
+import { Labels, LabelConfig } from "./config";
 
 const { readFile } = fs;
 const matchPattern = /\w+\([\w-]+\):\s+bump\s+\S+\s+from\s+v?(?<from>[\d.]+)\s+to\s+v?(?<to>[\d.]+)/;
-export const Labels: Record<string, { color: string; description: string }> = {
-  major: {
-    color: "0D3184",
-    description: "minor version dependency update",
-  },
-  minor: {
-    color: "365BB0",
-    description: "minor version dependency update",
-  },
-  patch: {
-    color: "365BB0",
-    description: "minor version dependency update",
-  },
-};
 
 export function matchTitle(
   title: string
@@ -49,24 +36,30 @@ export async function getEvent(): Promise<{
 export function buildPlan(
   repoLabels: RestEndpointMethodTypes["issues"]["listLabelsForRepo"]["response"]["data"],
   pullLabels: RestEndpointMethodTypes["issues"]["listLabelsOnIssue"]["response"]["data"],
-  setLabels: string[]
+  setLabels: LabelConfig[]
 ): {
   add: string[];
   remove: string[];
-  create: string[];
+  create: LabelConfig[];
 } {
-  const managedLabels = Object.keys(Labels);
+  const managedLabels = Object.entries(Labels)
+    .map((lc) => lc[1])
+    .flat(1);
   const remove = pullLabels
     .filter(
-      (pl) => managedLabels.includes(pl.name) && !setLabels.includes(pl.name)
+      (pl) =>
+        managedLabels.find((ml) => ml.name === pl.name) &&
+        !setLabels.find((sl) => sl.name === pl.name)
     )
     .map((pl) => pl.name);
 
-  const add = setLabels.filter(
-    (sl) => !pullLabels.find((pl) => pl.name === sl)
-  );
+  const add = setLabels
+    .filter((sl) => !pullLabels.find((pl) => pl.name === sl.name))
+    .map((sl) => sl.name);
 
-  const create = add.filter((l) => !repoLabels.find((rl) => rl.name === l));
+  const create = setLabels.filter(
+    (al) => !repoLabels.find((rl) => rl.name === al.name)
+  );
 
   return { add, remove, create };
 }

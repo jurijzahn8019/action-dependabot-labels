@@ -10,22 +10,42 @@ var debug = _interopDefault(require('debug'));
 var semver = require('semver');
 var fs = require('fs');
 
+const Labels = {
+    major: [
+        {
+            name: "dependency: major",
+            color: "0D3184",
+            description: "minor version dependency update",
+        },
+    ],
+    minor: [
+        {
+            name: "pull: automerge",
+            color: "6F4D8F",
+            description: "pull request should be automatically merged",
+        },
+        {
+            name: "dependency: minor",
+            color: "365BB0",
+            description: "minor version dependency update",
+        },
+    ],
+    patch: [
+        {
+            name: "pull: automerge",
+            color: "6F4D8F",
+            description: "pull request should be automatically merged",
+        },
+        {
+            name: "dependency: patch",
+            color: "365BB0",
+            description: "minor version dependency update",
+        },
+    ],
+};
+
 const { readFile } = fs.promises;
 const matchPattern = /\w+\([\w-]+\):\s+bump\s+\S+\s+from\s+v?(?<from>[\d.]+)\s+to\s+v?(?<to>[\d.]+)/;
-const Labels = {
-    major: {
-        color: "0D3184",
-        description: "minor version dependency update",
-    },
-    minor: {
-        color: "365BB0",
-        description: "minor version dependency update",
-    },
-    patch: {
-        color: "365BB0",
-        description: "minor version dependency update",
-    },
-};
 function matchTitle(title) {
     const match = matchPattern.exec(title);
     if ((match === null || match === void 0 ? void 0 : match.groups) && match.groups.from && match.groups.to) {
@@ -44,12 +64,17 @@ async function getEvent() {
     return JSON.parse(await readFile(process.env.GITHUB_EVENT_PATH, "utf8"));
 }
 function buildPlan(repoLabels, pullLabels, setLabels) {
-    const managedLabels = Object.keys(Labels);
+    const managedLabels = Object.entries(Labels)
+        .map((lc) => lc[1])
+        .flat(1);
     const remove = pullLabels
-        .filter((pl) => managedLabels.includes(pl.name) && !setLabels.includes(pl.name))
+        .filter((pl) => managedLabels.find((ml) => ml.name === pl.name) &&
+        !setLabels.find((sl) => sl.name === pl.name))
         .map((pl) => pl.name);
-    const add = setLabels.filter((sl) => !pullLabels.find((pl) => pl.name === sl));
-    const create = add.filter((l) => !repoLabels.find((rl) => rl.name === l));
+    const add = setLabels
+        .filter((sl) => !pullLabels.find((pl) => pl.name === sl.name))
+        .map((sl) => sl.name);
+    const create = setLabels.filter((al) => !repoLabels.find((rl) => rl.name === al.name));
     return { add, remove, create };
 }
 
@@ -59,42 +84,52 @@ async function run() {
     var _a;
     dbg("Check PR Title and label PR!");
     try {
+        dbg("Retrieve inputs, and event data");
         const token = core.getInput("token", { required: true });
         const event = await getEvent();
         const client = github.getOctokit(token);
+        dbg("Process Event: %j", event);
         if (((_a = event === null || event === void 0 ? void 0 : event.pull_request) === null || _a === void 0 ? void 0 : _a.number) === undefined) {
             core.setOutput("result", "no pr info provided");
             return;
         }
+        dbg("Fetch pull request data");
         const pr = (await client.pulls.get({
             ...github.context.repo,
             pull_number: event.pull_request.number,
         })).data;
+        dbg("Process pull request title: %s", pr.title);
         const match = matchTitle(pr.title);
         if (!match) {
             core.setOutput("result", "not dependabot");
             return;
         }
+        dbg("Calculate version diff from: %s to: %s", match.from.version, match.to.version);
         const version = verDiff(match.from, match.to);
         if (!version) {
             core.setOutput("result", "not semver range");
             return;
         }
+        dbg("Get Labels for version: %s", version);
+        const labelConfig = Labels[version];
+        if (!version) {
+            core.setOutput("result", "version mismatch");
+            return;
+        }
+        dbg("Fetch issue and repo labels");
         const labels = (await client.issues.listLabelsOnIssue({
             ...github.context.repo,
             issue_number: pr.number,
         })).data;
         const repoLabels = (await client.issues.listLabelsForRepo(github.context.repo))
             .data;
-        const plan = buildPlan(repoLabels, labels, [version]);
+        dbg("Build Pland to process labels: %j", labelConfig);
+        const plan = buildPlan(repoLabels, labels, labelConfig);
+        dbg("Create labels on repo: %j", plan.create);
         await Promise.all(plan.create.map(async (l) => {
-            const lConfig = Labels[l];
-            await client.issues.createLabel({
-                ...github.context.repo,
-                ...lConfig,
-                name: l,
-            });
+            await client.issues.createLabel({ ...github.context.repo, ...l });
         }));
+        dbg("Remove labels from PR: %j", plan.remove);
         await Promise.all(plan.remove.map((l) => {
             return client.issues.removeLabel({
                 ...github.context.repo,
@@ -102,6 +137,7 @@ async function run() {
                 name: l,
             });
         }));
+        dbg("Add labels to PR: %j", plan.add);
         if (plan.add.length > 0) {
             await client.issues.addLabels({
                 ...github.context.repo,
@@ -111,6 +147,7 @@ async function run() {
         }
     }
     catch (e) {
+        dbg("Failed:", e);
         core.setFailed(e.message);
     }
 }
