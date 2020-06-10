@@ -38,6 +38,7 @@ const Labels = {
     ],
 };
 
+/* eslint-disable camelcase */
 const { readFile } = promises;
 const matchPattern = /\w+\([\w-]+\):\s+bump\s+\S+\s+from\s+v?(?<from>[\d.]+)\s+to\s+v?(?<to>[\d.]+)/;
 function matchTitle(title) {
@@ -72,7 +73,7 @@ function buildPlan(repoLabels, pullLabels, setLabels) {
     return { add, remove, create };
 }
 
-/* eslint-disable @typescript-eslint/camelcase */
+/* eslint-disable camelcase */
 const dbg = debug("action-dependabot-labels:index");
 async function run() {
     var _a;

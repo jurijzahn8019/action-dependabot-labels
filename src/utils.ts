@@ -1,6 +1,10 @@
+/* eslint-disable camelcase */
 import { SemVer, coerce, diff, ReleaseType } from "semver";
 import { promises as fs } from "fs";
-import { RestEndpointMethodTypes } from "@octokit/rest";
+import {
+  IssuesListLabelsForRepoResponseData,
+  IssuesListLabelsOnIssueResponseData,
+} from "@octokit/types";
 import { Labels, LabelConfig } from "./config";
 
 const { readFile } = fs;
@@ -34,8 +38,8 @@ export async function getEvent(): Promise<{
 }
 
 export function buildPlan(
-  repoLabels: RestEndpointMethodTypes["issues"]["listLabelsForRepo"]["response"]["data"],
-  pullLabels: RestEndpointMethodTypes["issues"]["listLabelsOnIssue"]["response"]["data"],
+  repoLabels: IssuesListLabelsForRepoResponseData,
+  pullLabels: IssuesListLabelsOnIssueResponseData,
   setLabels: LabelConfig[]
 ): {
   add: string[];

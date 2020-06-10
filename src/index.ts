@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/camelcase */
+/* eslint-disable camelcase */
 import { getInput, setFailed, setOutput } from "@actions/core";
 import { getOctokit, context } from "@actions/github";
 import debug from "debug";
