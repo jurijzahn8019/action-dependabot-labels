@@ -1,4 +1,4 @@
-name: "Label Pull Request"
+name: "Label Dependabot PR"
 
 on:
   pull_request:
@@ -18,7 +18,7 @@ jobs:
     steps:
       - uses: jurijzahn8019/action-dependabot-labels@vNext
         env:
-          DEBUG: "*"
+          DEBUG: "action-dependabot-labels:*"
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
   # debug:
