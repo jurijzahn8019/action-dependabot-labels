@@ -38,7 +38,7 @@
     "@actions/core": "^1.2.4",
     "@actions/github": "^3.0.0",
     "@octokit/rest": "^17.11.0",
-    "@octokit/types": "^4.1.9",
+    "@octokit/types": "^5.0.0",
     "debug": "^4.1.1",
     "semver": "^7.3.2"
   },
