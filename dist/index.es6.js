@@ -110,15 +110,17 @@ async function run() {
             setOutput("result", "version mismatch");
             return;
         }
-        dbg("Fetch issue and repo labels");
-        const labels = (await client.issues.listLabelsOnIssue({
+        dbg("Fetch pull and repo labels");
+        const pullLabels = (await client.issues.listLabelsOnIssue({
             ...context.repo,
             issue_number: pr.number,
         })).data;
+        dbg("Pull labels: %j", pullLabels);
         const repoLabels = (await client.issues.listLabelsForRepo(context.repo))
             .data;
+        dbg("Repo labels: %j", pullLabels);
         dbg("Build Pland to process labels: %j", labelConfig);
-        const plan = buildPlan(repoLabels, labels, labelConfig);
+        const plan = buildPlan(repoLabels, pullLabels, labelConfig);
         dbg("Create labels on repo: %j", plan.create);
         await Promise.all(plan.create.map(async (l) => {
             await client.issues.createLabel({ ...context.repo, ...l });
