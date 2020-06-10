@@ -54,7 +54,7 @@ jobs:
   foo_bar:
     runs-on: ubuntu-latest
     steps:
-      - uses: jurijzahn8019/action-dependabot-labels@v0.0.1
+      - uses: jurijzahn8019/action-dependabot-labels@v0.1.0
         env:
           # This way you can enable debug output
           DEBUG: action-dependabot-labels:*
