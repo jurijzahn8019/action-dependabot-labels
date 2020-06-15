@@ -15,7 +15,7 @@ export async function run(): Promise<void> {
     const event = await getEvent();
     const client = getOctokit(token);
 
-    dbg("Process Event: %j", event);
+    // dbg("Process Event: %j", event);
     if (event?.pull_request?.number === undefined) {
       setOutput("result", "no pr info provided");
       return;
@@ -65,7 +65,7 @@ export async function run(): Promise<void> {
 
     const repoLabels = (await client.issues.listLabelsForRepo(context.repo))
       .data;
-    dbg("Repo labels: %j", pullLabels);
+    dbg("Repo labels: %j", repoLabels);
 
     dbg("Build Pland to process labels: %j", labelConfig);
     const plan = buildPlan(repoLabels, pullLabels, labelConfig);

@@ -89,7 +89,7 @@ async function run() {
         const token = core.getInput("token", { required: true });
         const event = await getEvent();
         const client = github.getOctokit(token);
-        dbg("Process Event: %j", event);
+        // dbg("Process Event: %j", event);
         if (((_a = event === null || event === void 0 ? void 0 : event.pull_request) === null || _a === void 0 ? void 0 : _a.number) === undefined) {
             core.setOutput("result", "no pr info provided");
             return;
@@ -125,7 +125,7 @@ async function run() {
         dbg("Pull labels: %j", pullLabels);
         const repoLabels = (await client.issues.listLabelsForRepo(github.context.repo))
             .data;
-        dbg("Repo labels: %j", pullLabels);
+        dbg("Repo labels: %j", repoLabels);
         dbg("Build Pland to process labels: %j", labelConfig);
         const plan = buildPlan(repoLabels, pullLabels, labelConfig);
         dbg("Create labels on repo: %j", plan.create);
