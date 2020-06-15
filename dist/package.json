@@ -11,7 +11,7 @@
     "build:watch": "tsc -w",
     "build:pkg": "cpy package*.json dist && npm ci --production --prefix dist",
     "clean": "rm -rf ./dist ./tmp",
-    "lint": "eslint src/**/*.ts",
+    "lint": "eslint --fix src/**/*.ts",
     "precommit": "npm run lint && npm run build && git add dist/*",
     "prerel": "standard-version --skip.changelog -p $(git branch --show-current | sed 's/master/rc/g' | sed 's/[_\\/]/-/g')",
     "release": "standard-version",

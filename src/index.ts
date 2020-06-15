@@ -2,8 +2,13 @@
 import { getInput, setFailed, setOutput } from "@actions/core";
 import { getOctokit, context } from "@actions/github";
 import debug from "debug";
+import {
+  IssuesListLabelsOnIssueResponseData,
+  IssuesListLabelsForRepoResponseData,
+} from "@octokit/types";
 import { matchTitle, getEvent, buildPlan, verDiff } from "./utils";
 import { Labels } from "./config";
+import { UnwrapArray } from "./types";
 
 const dbg = debug("action-dependabot-labels:index");
 
@@ -55,16 +60,25 @@ export async function run(): Promise<void> {
     }
 
     dbg("Fetch pull and repo labels");
-    const pullLabels = (
-      await client.issues.listLabelsOnIssue({
+    const pullLabels = await client.paginate<
+      UnwrapArray<IssuesListLabelsOnIssueResponseData>,
+      UnwrapArray<IssuesListLabelsOnIssueResponseData>
+    >(
+      client.issues.listLabelsOnIssue.endpoint.merge({
         ...context.repo,
         issue_number: pr.number,
-      })
-    ).data;
+      }),
+      (r) => r.data
+    );
     dbg("Pull labels: %j", pullLabels);
 
-    const repoLabels = (await client.issues.listLabelsForRepo(context.repo))
-      .data;
+    const repoLabels = await client.paginate<
+      UnwrapArray<IssuesListLabelsForRepoResponseData>,
+      UnwrapArray<IssuesListLabelsForRepoResponseData>
+    >(
+      client.issues.listLabelsForRepo.endpoint.merge(context.repo),
+      (r) => r.data
+    );
     dbg("Repo labels: %j", repoLabels);
 
     dbg("Build Pland to process labels: %j", labelConfig);

@@ -112,13 +112,12 @@ async function run() {
             return;
         }
         dbg("Fetch pull and repo labels");
-        const pullLabels = (await client.issues.listLabelsOnIssue({
+        const pullLabels = await client.paginate(client.issues.listLabelsOnIssue.endpoint.merge({
             ...context.repo,
             issue_number: pr.number,
-        })).data;
+        }), (r) => r.data);
         dbg("Pull labels: %j", pullLabels);
-        const repoLabels = (await client.issues.listLabelsForRepo(context.repo))
-            .data;
+        const repoLabels = await client.paginate(client.issues.listLabelsForRepo.endpoint.merge(context.repo), (r) => r.data);
         dbg("Repo labels: %j", repoLabels);
         dbg("Build Pland to process labels: %j", labelConfig);
         const plan = buildPlan(repoLabels, pullLabels, labelConfig);
