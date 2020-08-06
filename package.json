@@ -37,7 +37,7 @@
   "dependencies": {
     "@actions/core": "^1.2.4",
     "@actions/github": "^3.0.0",
-    "@octokit/rest": "^18.0.0",
+    "@octokit/rest": "^18.0.3",
     "@octokit/types": "^5.2.1",
     "debug": "^4.1.1",
     "semver": "^7.3.2"
