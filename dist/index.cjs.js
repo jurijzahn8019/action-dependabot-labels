@@ -2,13 +2,15 @@
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
-function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
-
 var core = require('@actions/core');
 var github = require('@actions/github');
-var debug = _interopDefault(require('debug'));
+var debug = require('debug');
 var semver = require('semver');
 var fs = require('fs');
+
+function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
+
+var debug__default = /*#__PURE__*/_interopDefaultLegacy(debug);
 
 const Labels = {
     major: [
@@ -80,7 +82,7 @@ function buildPlan(repoLabels, pullLabels, setLabels) {
 }
 
 /* eslint-disable camelcase */
-const dbg = debug("action-dependabot-labels:index");
+const dbg = debug__default['default']("action-dependabot-labels:index");
 async function run() {
     var _a;
     dbg("Check PR Title and label PR!");
