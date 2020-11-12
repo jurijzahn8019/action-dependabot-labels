@@ -97,3 +97,15 @@ jobs:
           UPDATE_LABELS: "update"
           UPDATE_METHOD: rebase
 ```
+
+## Development
+
+how to test
+
+```bash
+DEBUG=* \
+  GITHUB_EVENT_PATH=./fixtures/event.json \
+  GITHUB_REPOSITORY=foo/bar \
+  INPUT_TOKEN=FOOOOO \
+  node dist/index.cjs.js
+```

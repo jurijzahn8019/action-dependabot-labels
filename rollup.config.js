@@ -1,6 +1,7 @@
 import typescript from "@rollup/plugin-typescript";
 import resolve from "@rollup/plugin-node-resolve";
 import commonjs from "@rollup/plugin-commonjs";
+import json from "@rollup/plugin-json";
 import excludeDependenciesFromBundle from "rollup-plugin-exclude-dependencies-from-bundle";
 
 export default {
@@ -11,12 +12,29 @@ export default {
   ],
   plugins: [
     typescript({ tsconfig: "./tsconfig.prod.json" }),
-    resolve({ preferBuiltins: true }),
+    resolve({ preferBuiltins: false }),
     commonjs({ extensions: [".js", ".ts"] }),
-    excludeDependenciesFromBundle({
-      peerDependencies: true,
-      dependencies: true,
-    }),
+    json(),
+    // excludeDependenciesFromBundle({
+    //   peerDependencies: true,
+    //   dependencies: true,
+    // }),
   ],
-  external: ["aws-sdk"],
+  external: [
+    "fs",
+    "tty",
+    "util",
+    "os",
+    "path",
+    "http",
+    "https",
+    "tls",
+    "net",
+    "events",
+    "assert",
+    "stream",
+    "url",
+    "zlib",
+    "buffer",
+  ],
 };
